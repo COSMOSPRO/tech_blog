@@ -1,6 +1,6 @@
 ---
 title: "Munder Difflin —— 今日 Show HN 192 分的 agent harness 实测"
-date: 2026-08-23T08:30:00Z
+date: 2026-08-22T19:26:18Z
 tags: ["ai", "agent", "harness", "cli", "show-hn"]
 author: "COSMOSPRO"
 draft: false
