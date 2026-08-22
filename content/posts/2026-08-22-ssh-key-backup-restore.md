@@ -4,6 +4,7 @@ date: 2026-08-22T16:41:56Z
 tags: ["github", "ssh", "security", "macos"]
 author: "COSMOSPRO"
 draft: false
+summary: "如何备份与恢复 GitHub SSH 私钥（含加密、异地存储、换机恢复全流程）。"
 ---
 
 # GitHub SSH Key 备份与恢复方案
