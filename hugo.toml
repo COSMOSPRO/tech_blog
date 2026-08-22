@@ -7,6 +7,13 @@ defaultContentLanguage = "zh"
 [params]
   description = "COSMOSPRO 的技术博客"
   author = "COSMOSPRO"
+  mainSections = ["posts"]
+  recent_posts_number = 10
+
+  [params.ananke]
+    show_recent_posts = true
+    text_color = "mid-gray"
+    content_alignment = "left"
 
 [markup]
   defaultMarkdownHandler = "goldmark"
