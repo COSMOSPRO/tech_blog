@@ -7,8 +7,6 @@ draft: false
 summary: "如何备份与恢复 GitHub SSH 私钥（含加密、异地存储、换机恢复全流程）。"
 ---
 
-# GitHub SSH Key 备份与恢复方案
-
 > **适用对象**：`~/.ssh/github_key` / `~/.ssh/github_key.pub`（ed25519）
 > **绑定账号**：GitHub 用户各自的账号
 > **用途**：本机 push `git@github.com:<owner>/<repo>.git` 等仓库
@@ -21,8 +19,6 @@ summary: "如何备份与恢复 GitHub SSH 私钥（含加密、异地存储、�
 > 完整版（含私钥元信息）保留在你本机的 `~/Documents/github_key_metadata.md`。
 
 <!--more-->
-
----
 
 ## 0. 一分钟确认现状
 
