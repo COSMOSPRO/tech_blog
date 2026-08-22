@@ -1,3 +1,11 @@
+---
+title: "GitHub SSH Key 备份与恢复方案"
+date: 2026-08-22T16:41:56Z
+tags: ["github", "ssh", "security", "macos"]
+author: "COSMOSPRO"
+draft: false
+---
+
 # GitHub SSH Key 备份与恢复方案
 
 > **适用对象**：`~/.ssh/github_key` / `~/.ssh/github_key.pub`（ed25519）
