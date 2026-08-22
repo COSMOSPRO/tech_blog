@@ -4,15 +4,15 @@ date: 2026-08-23T08:30:00Z
 tags: ["ai", "agent", "harness", "cli", "show-hn"]
 author: "COSMOSPRO"
 draft: false
-summary: "用 Munder Difflin 作样本,拆解 agent harness 是什么、为什么 215 分的 Show HN 在做它、给 10 个 CLI 套同一个壳的工程细节。"
+summary: "用 Munder Difflin 作样本,拆解 agent harness 是什么、为什么 216 分的 Show HN 在做它、给 10 个 CLI 套同一个壳的工程细节。"
 ---
 
-> 当你说出"agent"这个词,你其实在指两件东西:大模型 + harness。前者一周一个版本,后者决定你的 agent 是玩具还是同事。这篇用一个刚在 Show HN 拿下 215 分(HN 帖原文 192 分,API 实测已涨到 215)的真实项目 Munder Difflin,把这层一直被忽略的工程拆给你看。
+> 当你说出"agent"这个词,你其实在指两件东西:大模型 + harness。前者一周一个版本,后者决定你的 agent 是玩具还是同事。这篇用一个刚在 Show HN 拿下 216 分(HN 帖原文 192 分,API 实测已涨到 216;原帖地址 [news.ycombinator.com/item?id=49398152](https://news.ycombinator.com/item?id=49398152))的真实项目 Munder Difflin,把这层一直被忽略的工程拆给你看。
 
 ## 0. 三句话定位
 
-- **Munder Difflin** 是一个开源的"agent 办公室":一块画布上同时拉起 N 个 agent 终端,每个跑独立任务,彼此通过文件 + 事件协作。当天 HN 最高分,GitHub star 一夜破 3.6k。
-- **它的本质不是新模型,而是 harness** —— 把"对话、终端、文件、事件、记忆"重新组织成可协作工作流的中间层。同期的 DeepSeek Harness、Claude SDK、Pi,本质上都在做同一件事。
+- **Munder Difflin** 是一个开源的"agent 办公室":一块画布上同时拉起 N 个 agent 终端,每个跑独立任务,彼此通过文件 + 事件协作。当天 HN 最高分,GitHub star 一夜破 3.6k([产品站](https://munderdiffl.in))。
+| **它的本质不是新模型,而是 harness** —— 把"对话、终端、文件、事件、记忆"重新组织成可协作工作流的中间层。同期的 DeepSeek Harness、Claude SDK、Pi,本质上都在做同一件事。Munder Difflin 团队自己写了一篇 [Harness engineering](https://munderdiffl.in/blog) 阐述这个判断,推荐读完本文再去看原文。
 - **harness engineering** 正在变成一个独立技术词,值得像"前端工程化""prompt 工程"那样单独学。
 
 ## 1. 为什么 harness 突然变重要
@@ -31,13 +31,13 @@ summary: "用 Munder Difflin 作样本,拆解 agent harness 是什么、为什�
 └─────────────────────────────────────────────┘
 ```
 
-上半部分是 harness,下半部分是模型。Munder Difflin 8 小时拿 215 分、3.6k star,Product Hunt 当日排进前 5 —— 说明社区已经发现:**上半部分才是真正能做出差异化的地方**。同期的 DeepSeek Harness(Show HN 排第 6)、Anthropic 的 Claude SDK、各家 IDE 里的 agent 视图,都在做这一层。
+上半部分是 harness,下半部分是模型。Munder Difflin 8 小时拿 216 分、3.6k star,Product Hunt 当日排进前 5 —— 说明社区已经发现:**上半部分才是真正能做出差异化的地方**。同期的 DeepSeek Harness(Show HN 排第 6)、Anthropic 的 Claude SDK、各家 IDE 里的 agent 视图,都在做这一层。
 
 > 为什么重要:过去两年所有"agent 框架"论文都在比模型,2026 年的 Show HN 榜单开始比框架。把 harness 这一层做成可复用、可观测的形式,就是分。它也是 2025 年以来"agent 创业公司"扎堆的地方 —— 模型层卷不动了,harness 层还是空白。
 
 ## 2. Munder Difflin 怎么拆:三平面架构
 
-读它的源码(repo `chaitanyagiri/munder-difflin`,MIT,当前 v0.4.4,2026-08-18 发布;发稿时 GitHub star = 3611,fork = 398,open_issues = 53),整个 client 端代码归到三个平面:
+读它的源码(repo [`chaitanyagiri/munder-difflin`](https://github.com/chaitanyagiri/munder-difflin),MIT,当前 v0.4.5,2026-08-22 发布;发稿时 GitHub star = 3614,fork = 398,open_issues = 53;产品站 [munderdiffl.in](https://munderdiffl.in),他们有一篇讲 harness 的博客 [munderdiffl.in/blog](https://munderdiffl.in/blog)),整个 client 端代码归到三个平面:
 
 | 平面 | 职责 | 关键技术 | 为什么重要 |
 |---|---|---|---|
@@ -118,7 +118,7 @@ console.log("Shim booted on port", PORT, "for provider", PROVIDER);
 
 把模型当轴心、把 harness 当外圈,这种分层听起来自然,但厂商之间会反过来踩脚:claude 的子代理(Sub-Agent)机制、codex 的 `--json-events`、agy 的 file log —— 三家各自往 harness 渗透。
 
-工程实操上,你有两个选择:一,坚持"上对下适配",shim 照写,但每次厂商升级要连夜追兼容;二,选边站,只接一家深度集成,把其他 CLI 列为 P2 兼容。Show HN 上 215 分的项目往往选了后者。**全平台兼容是个伪需求,真需求是"为你的工作流挑一个最合适的壳"**。
+工程实操上,你有两个选择:一,坚持"上对下适配",shim 照写,但每次厂商升级要连夜追兼容;二,选边站,只接一家深度集成,把其他 CLI 列为 P2 兼容。Show HN 上 216 分的项目往往选了后者。**全平台兼容是个伪需求,真需求是"为你的工作流挑一个最合适的壳"**。
 
 ## 5. 把 shim 接到 harness:Node 一面起事件总线,一面起 N 个 agent
 
@@ -172,20 +172,25 @@ server.listen(PORT, () =>
 
 ## 6. 待验证的项
 
-按 215 分的标准,几个没验证的项要留意:
+按 216 分的标准,几个没验证的项要留意 —— 真要拿这个项目进生产,先把这些补齐:
 
-- **"fastest memory layer"** 是作者自述,Issue 区有人要 benchmark,目前没第三方复测。
-- **10 个 CLI 覆盖深度不均**:claude / codex / agy 是深度集成,crush / pi / copilot 走裸 stdio shim,边界要自测。
-- **安全模型**:shim 把所有 CLI 事件 POST 到 localhost,本机任意进程都能读。起码绑 127.0.0.1(默认即是),但 unix socket + 权限是更好的工程选择。
+- **"fastest memory layer"** 是作者自述,Issue 区有人要 benchmark,目前没第三方复测。建议自建一份 100 条 JSONL 任务,跑三个 harness 对比准确率 + 延迟。
+- **10 个 CLI 覆盖深度不均**:claude / codex / agy 是深度集成,crush / pi / copilot 走裸 stdio shim,边界要自测。README 里写的"10 supported"和"10 production-ready"是两回事,选你要的那个。
+- **安全模型**:shim 把所有 CLI 事件 POST 到 localhost,本机任意进程都能读。起码绑 127.0.0.1(默认即是),但 unix socket + 权限是更好的工程选择。Munder Difflin v0.4.5 走的就是 127.0.0.1,生产部署前要换 unix socket。
+- **license 兼容性**:项目 MIT,但 shim 引的第三方包(`@xterm/*`、`pixi.js`、`node-pty`)各自的 license 要过一遍 AGPL / MIT / BSD 兼容性矩阵。
 
-> 为什么重要:harness 把所有 CLI 变成"可信客户端",本地攻击面反而变大。部署前过一遍 SkillsLLM 这类扫描,别只盯 LLM 输出来不及对钩。另外,shim 自身运行在用户 shell 上下文里,任何拿到你 terminal 的人都可以直接 cat 它的事件流 —— 把 access control 加到 harness 而不是 agent 上,才能避免成为新的侧信道。
+> 为什么重要:harness 把所有 CLI 变成"可信客户端",本地攻击面反而变大。部署前过一遍 SkillsLLM 这类扫描,别只盯 LLM 输出来不及对钩。另外,shim 自身运行在用户 shell 上下文里,任何拿到你 terminal 的人都可以直接 cat 它的事件流 —— 把 access control 加到 harness 而不是 agent 上,才能避免成为新的侧信道。SkillsLLM 在本次扫描里 returned warnings、no critical,但"no critical"不等于"没风险",留个心眼。
 
 ## 7. 接下来看什么
 
-- **DeepSeek Harness** 同期 Show HN 排第 6,主打本地 + 隐私,值得对照读源码。
-- **codex 的 `--json-events`** 最近一个月加了 reasoning 事件,影响所有 harness 归一化层。
-- **多 agent 协作协议**正在成"事实标准":MCP 供工具、a2a 供 agent-to-agent,中间的"harness 内部协议"还没人认领 —— 2026 下半年的空白。
+三件我接下来会盯的事,排个优先级给你参考:
+
+1. **DeepSeek Harness** 同期 Show HN 排第 6,主打本地 + 隐私,值得对照读源码。它和 Munder Difflin 的取舍差异最能讲清楚"harness 设计空间":一个全云协作,一个全本地缓存,目标用户群完全不同。
+2. **codex 的 `--json-events`** 最近一个月加了 reasoning 事件(模型内部的思考链),影响所有 harness 归一化层。claude 也在跟 —— 你读到这篇时大概率已经有两到三家支持,shim 的 schema 要么跟随要么注明不支持。
+3. **多 agent 协作协议**正在成"事实标准":MCP 供工具、a2a 供 agent-to-agent,中间的"harness 内部协议"还没人认领 —— 2026 下半年的空白。Munder Difflin 的做法可能变成事实标准之一,值得早读 repo 早占位。
+
+如果只能做一件事:**去 clone [`munder-difflin`](https://github.com/chaitanyagiri/munder-difflin) repo,跑它官方 demo,再回头看一遍本文第 3 节的 shim** —— 你会比读 10 篇评测更懂 harness 在干什么。
 
 ---
 
-Harness 不会取代模型,但它会替换"怎么用模型"。Show HN 215 分、3.6k star 的信号很清楚:**未来 12 个月,prompt 工程之外,你还需要会 harness 工程**。
+Harness 不会取代模型,但它会替换"怎么用模型"。Show HN 216 分、3.6k star 的信号很清楚:**未来 12 个月,prompt 工程之外,你还需要会 harness 工程**。学会写 shim、比懂 RAG 更值得投时间。
