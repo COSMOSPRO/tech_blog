@@ -1,0 +1,15 @@
+baseURL = "https://COSMOSPRO.github.io/tech_blog/"
+languageCode = "zh-cn"
+title = "tech_blog"
+theme = "ananke"
+defaultContentLanguage = "zh"
+
+[params]
+  description = "COSMOSPRO 的技术博客"
+  author = "COSMOSPRO"
+
+[markup]
+  defaultMarkdownHandler = "goldmark"
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
