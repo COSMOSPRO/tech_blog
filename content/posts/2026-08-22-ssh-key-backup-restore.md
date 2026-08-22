@@ -19,6 +19,8 @@ draft: false
 > - 备份介质细节已留空
 > 完整版（含私钥元信息）保留在你本机的 `~/Documents/github_key_metadata.md`。
 
+<!--more-->
+
 ---
 
 ## 0. 一分钟确认现状
