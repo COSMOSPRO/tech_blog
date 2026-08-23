@@ -1,0 +1,27 @@
+/* ============================================================
+   custom.css — 项目级样式（覆盖 ananke 主题）
+   路径: /static/custom.css
+   加载: hugo.toml 中 [params.ananke].custom_css = ["custom.css"]
+   ============================================================ */
+
+/* 首页文章列表：摘要限制 5 行，多余的用省略号截断。
+   line-clamp 是 CSS 标准，-webkit-line-clamp 是 Webkit/Blink 实现。
+   现代浏览器（Chrome 90+/Safari 16+）已支持不带前缀的标准属性。 */
+.summary-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+  /* line-clamp 是基于行盒子的，每段算一行；
+     如果摘要里有 h1/h2 等块级元素也算一行。
+     段落间距收紧一下让 5 行能容纳更多文字 */
+}
+
+.summary-clamp > * {
+  margin: 0 0 0.3em 0;
+}
+
+.summary-clamp > *:last-child {
+  margin-bottom: 0;
+}
